@@ -84,19 +84,22 @@ body {
 @media (max-width:500px) {
   body { background:#000; }
   .header { display:none; }
-  .container { padding:0; min-height:100dvh; }
-  .phone-wrap { width:100vw; height:100dvh; }
+  .container { padding:0; min-height:100dvh; justify-content:center; }
+  .phone-wrap { width:100vw; height:100dvh; display:flex; align-items:center; justify-content:center; }
   .phone-frame {
     width:100vw;
     height:100dvh;
+    max-width:100vw;
+    max-height:100dvh;
     border-radius:0; border:none; box-shadow:none;
   }
   .screen { height:100dvh; }
   .screen img {
     width:100vw;
     height:100dvh;
-    object-fit:cover;
+    object-fit:contain;
   }
+}
 }
     inset:0;
     width:100%;
