@@ -25,8 +25,9 @@ body{
 
 /* ---- 手机框（PC：自适应视口高度，上限812px） ---- */
 .phone-frame{
-  height:min(90vh,812px);
-  aspect-ratio:375/812;
+  --h:min(90vh,812px);
+  width:calc(var(--h) * 375 / 812);
+  height:var(--h);
   border-radius:44px;
   border:6px solid #2a2a3e;
   background:#000;
