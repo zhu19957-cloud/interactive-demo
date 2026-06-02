@@ -193,30 +193,43 @@ HOTSPOT_CONFIG.forEach(c=>{
   sc.appendChild(d);
 });
 
-function layout(){
+function setPct(el,p){
+  el.style.cssText=
+    (p.left?'left:'+p.left+';':'')+(p.right?'right:'+p.right+';':'')+
+    (p.top?'top:'+p.top+';':'')+(p.bottom?'bottom:'+p.bottom+';':'')+
+    'width:'+p.width+';height:'+p.height+';';
+}
+
+function setPx(el,p,W,H,ox,oy){
+  const pw=parseFloat(p.width)/100*W,ph=parseFloat(p.height)/100*H;
+  const a=[];
+  if(p.left!=null)a.push('left:'+(ox+parseFloat(p.left)/100*W)+'px');
+  if(p.right!=null)a.push('left:'+(ox+W-parseFloat(p.right)/100*W-pw)+'px');
+  if(p.top!=null)a.push('top:'+(oy+parseFloat(p.top)/100*H)+'px');
+  if(p.bottom!=null)a.push('top:'+(oy+H-parseFloat(p.bottom)/100*H-ph)+'px');
+  a.push('width:'+pw+'px','height:'+ph+'px');
+  el.style.cssText=a.join(';');
+}
+
+function relayout(){
+  const isMobile=window.innerWidth<=600;
+  if(!isMobile){
+    // PC: CSS 百分比最精确
+    items.forEach(item=>setPct(item.el,item.pos));
+</script>
+    return;
+  }
+  // 手机: 含 object-fit:contain 偏移计算
   const W=pf.offsetWidth,H=pf.offsetHeight;
   const cR=W/H;
   let imgW,imgH,ox,oy;
   if(cR>IMG_A){imgH=H;imgW=H*IMG_A;ox=(W-imgW)/2;oy=0}
   else{imgW=W;imgH=W/IMG_A;ox=0;oy=(H-imgH)/2}
-
-  items.forEach(item=>{
-    const p=item.pos;
-    const pw=parseFloat(p.width)/100*imgW;
-    const ph=parseFloat(p.height)/100*imgH;
-    const a=[];
-    if(p.left!=null)a.push('left:'+(ox+parseFloat(p.left)/100*imgW)+'px');
-    if(p.right!=null)a.push('left:'+(ox+imgW-parseFloat(p.right)/100*imgW-pw)+'px');
-    if(p.top!=null)a.push('top:'+(oy+parseFloat(p.top)/100*imgH)+'px');
-    if(p.bottom!=null)a.push('top:'+(oy+imgH-parseFloat(p.bottom)/100*imgH-ph)+'px');
-    a.push('width:'+pw+'px','height:'+ph+'px');
-    item.el.style.cssText=a.join(';');
-  });
+  items.forEach(item=>setPx(item.el,item.pos,imgW,imgH,ox,oy));
 }
 
-layout();
-window.addEventListener('resize',layout);
-</script>
+relayout();
+window.addEventListener('resize',relayout);
 
 </body>
 </html>
