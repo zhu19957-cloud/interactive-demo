@@ -23,9 +23,10 @@ body{
 /* ---- 容器 ---- */
 .container{flex:1;display:flex;align-items:center;justify-content:center;padding:10px}
 
-/* ---- 手机框（PC） ---- */
+/* ---- 手机框（PC：自适应视口高度，上限812px） ---- */
 .phone-frame{
-  width:375px;height:812px;
+  height:min(90vh,812px);
+  aspect-ratio:375/812;
   border-radius:44px;
   border:6px solid #2a2a3e;
   background:#000;
