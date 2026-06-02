@@ -214,12 +214,9 @@ function setPx(el,p,W,H,ox,oy){
 function relayout(){
   const isMobile=window.innerWidth<=600;
   if(!isMobile){
-    // PC: CSS 百分比最精确
     items.forEach(item=>setPct(item.el,item.pos));
-</script>
     return;
   }
-  // 手机: 含 object-fit:contain 偏移计算
   const W=pf.offsetWidth,H=pf.offsetHeight;
   const cR=W/H;
   let imgW,imgH,ox,oy;
@@ -230,6 +227,6 @@ function relayout(){
 
 relayout();
 window.addEventListener('resize',relayout);
-
+</script>
 </body>
 </html>
