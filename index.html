@@ -23,17 +23,20 @@ body{
 /* ---- 容器 ---- */
 .container{flex:1;display:flex;align-items:center;justify-content:center;padding:10px}
 
-/* ---- 手机框（PC：自适应视口高度，上限812px） ---- */
+/* ---- 手机框（PC） ---- */
 .phone-frame{
-  --h:min(90vh,812px);
-  width:calc(var(--h) * 375 / 812);
-  height:var(--h);
+  width:375px;height:812px;
   border-radius:44px;
   border:6px solid #2a2a3e;
   background:#000;
   overflow:hidden;
   position:relative;
   box-shadow:0 0 0 2px #3a3a5e,0 20px 60px rgba(0,0,0,0.5);
+}
+/* PC 上整体缩放，不改变内部百分比基准 */
+@media(min-width:601px){
+  .container{transform:scale(.82);transform-origin:center center}
+}
 }
 
 /* ---- 屏幕层 ---- */
