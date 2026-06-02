@@ -28,6 +28,7 @@ body{background:#1a1a2e;font-family:-apple-system,'PingFang SC',sans-serif;displ
 @media(max-width:600px){
   body{background:#000}.header{display:none}.container{padding:0}
   .phone-frame{--h:100dvh;width:100vw;height:100dvh;border-radius:0;border:none;box-shadow:none}
+  .screen img{object-fit:contain}
 }
 </style>
 </head>
@@ -171,22 +172,50 @@ const HOTSPOT_CONFIG=[
     pos:{ left:'86%', top:'80%', width:'16%', height:'6%' } }
 ];
 
+const IMG_W=375,IMG_H=812,IMG_A=IMG_W/IMG_H;
+const pf=document.getElementById('phoneFrame');
 let cur='screen-xj1';
+const items=[];
 
 HOTSPOT_CONFIG.forEach(c=>{
   const sc=document.getElementById(c.screen);
   if(!sc)return;
   const d=document.createElement('div');
-  d.className='hotspot';d.dataset.label=c.label;
-  const s=c.pos;
-  d.style.cssText=
-    (s.left?'left:'+s.left+';':'')+(s.right?'right:'+s.right+';':'')+
-    (s.top?'top:'+s.top+';':'')+(s.bottom?'bottom:'+s.bottom+';':'')+
-    'width:'+s.width+';'+'height:'+s.height+';';
-  d.onclick=()=>{if(c.target){document.getElementById(cur).classList.remove('active');document.getElementById(c.target).classList.add('active');cur=c.target}};
+  d.className='hotspot';d.dataset.label=c.label;d.dataset.target=c.target||'';
+  items.push({el:d,pos:c.pos});
+  d.onclick=()=>{
+    const t=d.dataset.target;
+    if(!t)return;
+    document.getElementById(cur).classList.remove('active');
+    document.getElementById(t).classList.add('active');
+    cur=t;
+  };
   sc.appendChild(d);
 });
-</script>
+
+function layout(){
+  const W=pf.offsetWidth,H=pf.offsetHeight;
+  const cR=W/H;
+  let imgW,imgH,ox,oy;
+  if(cR>IMG_A){imgH=H;imgW=H*IMG_A;ox=(W-imgW)/2;oy=0}
+  else{imgW=W;imgH=W/IMG_A;ox=0;oy=(H-imgH)/2}
+
+  items.forEach(item=>{
+    const p=item.pos;
+    const pw=parseFloat(p.width)/100*imgW;
+    const ph=parseFloat(p.height)/100*imgH;
+    const a=[];
+    if(p.left!=null)a.push('left:'+(ox+parseFloat(p.left)/100*imgW)+'px');
+    if(p.right!=null)a.push('left:'+(ox+imgW-parseFloat(p.right)/100*imgW-pw)+'px');
+    if(p.top!=null)a.push('top:'+(oy+parseFloat(p.top)/100*imgH)+'px');
+    if(p.bottom!=null)a.push('top:'+(oy+imgH-parseFloat(p.bottom)/100*imgH-ph)+'px');
+    a.push('width:'+pw+'px','height:'+ph+'px');
+    item.el.style.cssText=a.join(';');
+  });
+}
+
+layout();
+window.addEventListener('resize',layout);
 
 </body>
 </html>
