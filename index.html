@@ -61,71 +61,132 @@ body{background:#1a1a2e;font-family:-apple-system,'PingFang SC',sans-serif;displ
 </div>
 
 <script>
-const CFG=[
-  {s:'screen-xj1',l:'选Ta',t:'screen-xj2',p:{l:4,b:6,w:92,h:7}},
-  {s:'screen-xj2',l:'← 返回选角1',t:'screen-xj1',p:{l:4,t:8,w:10,h:5}},
-  {s:'screen-xj2',l:'继续 → 选角3',t:'screen-xj3',p:{l:4,b:38,w:92,h:7}},
-  {s:'screen-xj3',l:'← 返回选角2',t:'screen-xj2',p:{l:4,t:8,w:10,h:5}},
-  {s:'screen-xj3',l:'继续 → 选角4',t:'screen-xj4',p:{l:4,b:6,w:92,h:7}},
-  {s:'screen-xj4',l:'← 返回选角3',t:'screen-xj3',p:{l:4,t:8,w:10,h:5}},
-  {s:'screen-xj4',l:'进入聊天 → 聊天1',t:'screen-lt1',p:{l:4,b:6,w:92,h:7}},
-  {s:'screen-lt1',l:'📞 电话 → 通话1',t:'screen-th1',p:{l:5,b:6.5,w:9,h:5}},
-  {s:'screen-lt1',l:'➕ 更多功能 → 聊天2',t:'screen-lt2',p:{r:5.5,b:6.5,w:9,h:5}},
-  {s:'screen-lt2',l:'📞 电话 → 通话1',t:'screen-th1',p:{l:5,b:17.5,w:9,h:5}},
-  {s:'screen-lt2',l:'😴 哄睡 → 哄睡1',t:'screen-hs1',p:{r:30,b:6.5,w:16,h:8}},
-  {s:'screen-lt2',l:'🪵 木头人 → 木头人1',t:'screen-mtr1',p:{r:6,b:6.5,w:16,h:8}},
-  {s:'screen-th1',l:'🖼 小窗 → 通话2',t:'screen-th2',p:{r:2.5,t:7.5,w:12,h:5}},
-  {s:'screen-th1',l:'🔴 挂断 → 聊天1',t:'screen-lt1',p:{r:5.5,b:6.5,w:16,h:7}},
-  {s:'screen-th2',l:'👤 头像 → 通话1',t:'screen-th1',p:{l:75,t:16,w:26,h:16}},
-  {s:'screen-th2',l:'💬 更多 → 聊天2',t:'screen-lt2',p:{r:5.5,b:6.5,w:9,h:5}},
-  {s:'screen-mtr1',l:'✕ 关闭游戏 → 聊天1',t:'screen-lt1',p:{r:6.5,t:49,w:7,h:3.5}},
-  {s:'screen-mtr1',l:'🃏 找到木头人 → 木头人2',t:'screen-mtr2',p:{l:40.5,t:53,w:19,h:12}},
-  {s:'screen-mtr2',l:'🎭 木偶 → 惩罚1',t:'screen-cf1',p:{l:24,t:78,w:52,h:9}},
-  {s:'screen-cf1',l:'▶️ 播放视频 → 惩罚2',t:'screen-cf2',p:{l:2,b:20,w:30,h:18}},
-  {s:'screen-cf1',l:'💬 打开聊天2',t:'screen-lt2',p:{r:5.5,b:6.5,w:9,h:5}},
-  {s:'screen-cf1',l:'📞 打开通话1',t:'screen-th1',p:{l:5,b:6.5,w:9,h:5}},
-  {s:'screen-cf2',l:'✕ 关闭 → 聊天1',t:'screen-lt1',p:{r:2.8,t:7.8,w:11,h:5}},
-  {s:'screen-hs1',l:'✕ 关闭音乐 → 聊天1',t:'screen-lt1',p:{r:6,b:18,w:8,h:4}},
-  {s:'screen-lt1',l:'🏠 房间',t:'screen-fj1',p:{r:2,t:7,w:12,h:6}},
-  {s:'screen-fj1',l:'← 返回聊天1',t:'screen-lt1',p:{l:4,t:8,w:11,h:6}},
-  {s:'screen-fj1',l:'📖 打开日记1',t:'screen-rj1',p:{l:25,t:44,w:30,h:10}},
-  {s:'screen-rj1',l:'← 返回房间1',t:'screen-fj1',p:{l:4,t:8,w:11,h:6}},
-  {s:'screen-mtr1',l:'📦 收起',t:'screen-sq1',p:{r:16,t:49,w:7,h:3.5}},
-  {s:'screen-sq1',l:'← 返回木头人1',t:'screen-mtr1',p:{l:86,t:80,w:16,h:6}},
-  {s:'screen-hs1',l:'🗂️ 收起',t:'screen-sq2',p:{r:16,b:18,w:8,h:4}},
-  {s:'screen-sq2',l:'← 返回哄睡1',t:'screen-hs1',p:{l:86,t:80,w:16,h:6}}
+
+const HOTSPOT_CONFIG=[
+
+  // ── 选角1 ──
+  { screen:'screen-xj1', label:'选Ta', target:'screen-xj2',
+    pos:{ left:'4%', bottom:'6%', width:'92%', height:'7%' } },
+
+  // ── 选角2 ──
+  { screen:'screen-xj2', label:'← 返回选角1', target:'screen-xj1',
+    pos:{ left:'4%', top:'8%', width:'10%', height:'5%' } },
+  { screen:'screen-xj2', label:'继续 → 选角3', target:'screen-xj3',
+    pos:{ left:'4%', bottom:'38%', width:'92%', height:'7%' } },
+
+  // ── 选角3 ──
+  { screen:'screen-xj3', label:'← 返回选角2', target:'screen-xj2',
+    pos:{ left:'4%', top:'8%', width:'10%', height:'5%' } },
+  { screen:'screen-xj3', label:'继续 → 选角4', target:'screen-xj4',
+    pos:{ left:'4%', bottom:'6%', width:'92%', height:'7%' } },
+
+  // ── 选角4 ──
+  { screen:'screen-xj4', label:'← 返回选角3', target:'screen-xj3',
+    pos:{ left:'4%', top:'8%', width:'10%', height:'5%' } },
+  { screen:'screen-xj4', label:'进入聊天 → 聊天1', target:'screen-lt1',
+    pos:{ left:'4%', bottom:'6%', width:'92%', height:'7%' } },
+
+  // ── 聊天1 ──
+  { screen:'screen-lt1', label:'📞 电话 → 通话1', target:'screen-th1',
+    pos:{ left:'5%', bottom:'6.5%', width:'9%', height:'5%' } },
+  { screen:'screen-lt1', label:'➕ 更多功能 → 聊天2', target:'screen-lt2',
+    pos:{ right:'5.5%', bottom:'6.5%', width:'9%', height:'5%' } },
+
+  // ── 聊天2 ──
+  { screen:'screen-lt2', label:'📞 电话 → 通话1', target:'screen-th1',
+    pos:{ left:'5%', bottom:'17.5%', width:'9%', height:'5%' } },
+  { screen:'screen-lt2', label:'😴 哄睡 → 哄睡1', target:'screen-hs1',
+    pos:{ right:'30%', bottom:'6.5%', width:'16%', height:'8%' } },
+  { screen:'screen-lt2', label:'🪵 木头人 → 木头人1', target:'screen-mtr1',
+    pos:{ right:'6%', bottom:'6.5%', width:'16%', height:'8%' } },
+
+  // ── 通话1 ──
+  { screen:'screen-th1', label:'🖼 小窗 → 通话2', target:'screen-th2',
+    pos:{ right:'2.5%', top:'7.5%', width:'12%', height:'5%' } },
+  { screen:'screen-th1', label:'🔴 挂断 → 聊天1', target:'screen-lt1',
+    pos:{ right:'5.5%', bottom:'6.5%', width:'16%', height:'7%' } },
+
+  // ── 通话2 ──
+  { screen:'screen-th2', label:'👤 头像 → 通话1', target:'screen-th1',
+    pos:{ left:'75%', top:'16%', width:'26%', height:'16%' } },
+  { screen:'screen-th2', label:'💬 更多 → 聊天2', target:'screen-lt2',
+    pos:{ right:'5.5%', bottom:'6.5%', width:'9%', height:'5%' } },
+
+  // ── 木头人1 ──
+  { screen:'screen-mtr1', label:'✕ 关闭游戏 → 聊天1', target:'screen-lt1',
+    pos:{ right:'6.5%', top:'49%', width:'7%', height:'3.5%' } },
+  { screen:'screen-mtr1', label:'🃏 找到木头人 → 木头人2', target:'screen-mtr2',
+    pos:{ left:'40.5%', top:'53%', width:'19%', height:'12%' } },
+
+  // ── 木头人2 ──
+  { screen:'screen-mtr2', label:'🎭 木偶 → 惩罚1', target:'screen-cf1',
+    pos:{ left:'24%', top:'78%', width:'52%', height:'9%' } },
+
+  // ── 惩罚1 ──
+  { screen:'screen-cf1', label:'▶️ 播放视频 → 惩罚2', target:'screen-cf2',
+    pos:{ left:'2%', bottom:'20%', width:'30%', height:'18%' } },
+  { screen:'screen-cf1', label:'💬 打开聊天2', target:'screen-lt2',
+    pos:{ right:'5.5%', bottom:'6.5%', width:'9%', height:'5%' } },
+  { screen:'screen-cf1', label:'📞 打开通话1', target:'screen-th1',
+    pos:{ left:'5%', bottom:'6.5%', width:'9%', height:'5%' } },
+
+  // ── 惩罚2 ──
+  { screen:'screen-cf2', label:'✕ 关闭 → 聊天1', target:'screen-lt1',
+    pos:{ right:'2.8%', top:'7.8%', width:'11%', height:'5%' } },
+
+  // ── 哄睡1 ──
+  { screen:'screen-hs1', label:'✕ 关闭音乐 → 聊天1', target:'screen-lt1',
+    pos:{ right:'6%', bottom:'18%', width:'8%', height:'4%' } },
+
+  // ╔══════════════════════════════════════════════════════════════════════════╗
+  // ║              ★ 新增热区（用户自行调整位置和大小）                           ║
+  // ╚══════════════════════════════════════════════════════════════════════════╝
+
+  // ── 聊天1 右上角 → 房间1 ──
+  { screen:'screen-lt1', label:'🏠 房间', target:'screen-fj1',
+    pos:{ right:'2%', top:'7%', width:'12%', height:'6%' } },
+
+  // ── 房间1 ──
+  { screen:'screen-fj1', label:'← 返回聊天1', target:'screen-lt1',
+    pos:{ left:'4%', top:'8%', width:'11%', height:'6%' } },
+  { screen:'screen-fj1', label:'📖 打开日记1', target:'screen-rj1',
+    pos:{ left:'25%', top:'44%', width:'30%', height:'10%' } },
+
+  // ── 日记1 ──
+  { screen:'screen-rj1', label:'← 返回房间1', target:'screen-fj1',
+    pos:{ left:'4%', top:'8%', width:'11%', height:'6%' } },
+
+  // ── 木头人1 中间 → 收起1 ──
+  { screen:'screen-mtr1', label:'📦 收起', target:'screen-sq1',
+    pos:{ right:'16%', top:'49%', width:'7%', height:'3.5%' } },
+  // ── 收起1 ──
+  { screen:'screen-sq1', label:'← 返回木头人1', target:'screen-mtr1',
+    pos:{ left:'86%', top:'80%', width:'16%', height:'6%' } },
+
+  // ── 哄睡1 中间 → 收起2 ──
+  { screen:'screen-hs1', label:'🗂️ 收起', target:'screen-sq2',
+    pos:{ right:'16%', bottom:'18%', width:'8%', height:'4%' } },
+
+  // ── 收起2 ──
+  { screen:'screen-sq2', label:'← 返回哄睡1', target:'screen-hs1',
+    pos:{ left:'86%', top:'80%', width:'16%', height:'6%' } }
 ];
 
 let cur='screen-xj1';
-const pf=document.getElementById('phoneFrame');
-const hotspots=[];
 
-function px(v,dim){return parseFloat(v)/100*dim+'px'}
-
-function layout(){
-  const W=pf.offsetWidth,H=pf.offsetHeight;
-  hotspots.forEach(h=>{
-    const p=h.p,a=[];
-    if(p.l!=null)a.push('left:'+px(p.l,W));
-    if(p.r!=null)a.push('right:'+px(p.r,W));
-    if(p.t!=null)a.push('top:'+px(p.t,H));
-    if(p.b!=null)a.push('bottom:'+px(p.b,H));
-    a.push('width:'+px(p.w,W),'height:'+px(p.h,H));
-    h.el.style.cssText=a.join(';');
-  });
-
-CFG.forEach(c=>{
-  const sc=document.getElementById(c.s);
+HOTSPOT_CONFIG.forEach(c=>{
+  const sc=document.getElementById(c.screen);
   if(!sc)return;
   const d=document.createElement('div');
-  d.className='hotspot';d.dataset.label=c.l;
-  hotspots.push({el:d,p:c.p});
-  d.onclick=()=>{if(c.t){document.getElementById(cur).classList.remove('active');document.getElementById(c.t).classList.add('active');cur=c.t}};
+  d.className='hotspot';d.dataset.label=c.label;
+  const s=c.pos;
+  d.style.cssText=
+    (s.left?'left:'+s.left+';':'')+(s.right?'right:'+s.right+';':'')+
+    (s.top?'top:'+s.top+';':'')+(s.bottom?'bottom:'+s.bottom+';':'')+
+    'width:'+s.width+';'+'height:'+s.height+';';
+  d.onclick=()=>{if(c.target){document.getElementById(cur).classList.remove('active');document.getElementById(c.target).classList.add('active');cur=c.target}};
   sc.appendChild(d);
 });
-
-layout();
-window.addEventListener('resize',layout);
 </script>
 
 </body>
