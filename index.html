@@ -5,435 +5,250 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>互动流程 Demo</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #1a1a2e;
-    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #fff;
-    overflow-x: hidden;
-  }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#1a1a2e;
+  font-family:-apple-system,'PingFang SC',sans-serif;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  color:#fff;
+}
+.header { text-align:center; padding:16px 16px 8px; }
+.header h1 { font-size:18px; font-weight:600; color:#ccc; }
+.container {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:12px;
+  min-height:calc(100vh - 60px);
+}
+.phone-wrap { position:relative; }
+.phone-frame {
+  width:300px;
+  height:650px;
+  border-radius:36px;
+  border:5px solid #2a2a3e;
+  background:#000;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 0 0 2px #3a3a5e, 0 10px 40px rgba(0,0,0,0.5);
+}
+.screen {
+  position:absolute;
+  inset:0;
+  background:#000;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .35s ease;
+  z-index:1;
+}
+.screen.active { opacity:1; pointer-events:auto; z-index:10; }
+.screen img { width:100%; height:100%; display:block; }
 
-  /* ===== 标题栏 ===== */
-  .header {
-    text-align: center;
-    padding: 16px 16px 8px;
-    width: 100%;
-  }
-  .header h1 { font-size: 18px; font-weight: 600; color: #ccc; }
+.hotspot {
+  position:absolute;
+  z-index:20;
+  cursor:pointer;
+  border:2px solid rgba(0,212,255,0.25);
+  border-radius:6px;
+  transition:all .2s ease;
+  background:rgba(0,212,255,0.06);
+}
+.hotspot:hover {
+  border-color:#00d4ff;
+  background:rgba(0,212,255,0.15);
+  box-shadow:0 0 20px rgba(0,212,255,0.3);
+}
+.hotspot:active { background:rgba(0,212,255,0.25); }
+.hotspot::after {
+  content:attr(data-label);
+  position:absolute;
+  bottom:calc(100% + 5px);
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,0.88);
+  color:#fff;
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:5px;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .15s;
+  z-index:30;
+}
+.hotspot:hover::after { opacity:1; }
 
-  /* ===== 容器（居中手机框） ===== */
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 12px;
-    min-height: calc(100vh - 60px);
-  }
-
-  /* ===== 手机模拟器 ===== */
-  .phone-wrap { position: relative; }
+@media (max-width:500px) {
+  body { background:#000; }
+  .header { display:none; }
+  .container { padding:0; min-height:100vh; }
   .phone-frame {
-
-  /* ===== 手机模拟器 ===== */
-  .phone-wrap {
-    position: relative;
-    flex-shrink: 0;
+    width:100vw; height:100vh;
+    border-radius:0; border:none; box-shadow:none;
   }
-  .phone-frame {
-    width: 375px;
-    height: 812px;
-    border-radius: 44px;
-    border: 6px solid #2a2a3e;
-    background: #000;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 0 0 2px #3a3a5e, 0 20px 60px rgba(0,0,0,0.5);
-  }
-
-  /* ===== 屏幕层 ===== */
-  .screen {
-    position: absolute;
-    inset: 0;
-    background: #000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.35s ease;
-    z-index: 1;
-  }
-  .screen.active {
-    opacity: 1;
-    pointer-events: auto;
-    z-index: 10;
-  }
-  .screen img {
-    width: 100%;
-    height: 100%;
-
-  /* ===== 热区（默认半透明，hover 高亮） ===== */
-  .hotspot {
-    position: absolute;
-    z-index: 20;
-    cursor: pointer;
-    border: 2px solid rgba(0, 212, 255, 0.25);
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    background: rgba(0, 212, 255, 0.06);
-  }
-  .hotspot:hover {
-    border-color: #00d4ff;
-    background: rgba(0, 212, 255, 0.15);
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-  }
-  .hotspot:active {
-    background: rgba(0, 212, 255, 0.25);
-  }
-
-  /* 热区标签（hover 时显示） */
-  .hotspot::after {
-    content: attr(data-label);
-    position: absolute;
-    bottom: calc(100% + 5px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.88);
-    color: #fff;
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 5px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s;
-    z-index: 30;
-  }
-  .hotspot:hover::after { opacity: 1; }
-
-  .hotspot:hover::after { opacity: 1; }
-
-  /* ===== 响应式 - 手机全屏 ===== */
-  @media (max-width: 500px) {
-    body { background: #000; }
-    .header { display: none; }
-    .container { padding: 0; min-height: 100vh; }
-    .phone-frame {
-      width: 100vw;
-      height: 100vh;
-      border-radius: 0;
-      border: none;
-      box-shadow: none;
-    }
-    .screen img {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-    }
-  }
+  .screen img { width:100vw; height:100vh; object-fit:cover; }
+}
+</style>
 </head>
 <body>
 
-<div class="header">
-  <h1>🎮 互动流程 Demo</h1>
-</div>
+<div class="header"><h1>🎮 互动流程 Demo</h1></div>
 
 <div class="container">
-  <div class="phone-wrap">
-    <div class="phone-frame" id="phoneFrame">
+<div class="phone-wrap">
+<div class="phone-frame" id="phoneFrame">
 
-      <!-- 选角1 --><div class="screen active" id="screen-xj1" data-name="选角1" data-phase="选角"><img src="sucai/选角1.png" alt="选角1"></div>
-      <!-- 选角2 --><div class="screen" id="screen-xj2" data-name="选角2" data-phase="选角"><img src="sucai/选角2.png" alt="选角2"></div>
-      <!-- 选角3 --><div class="screen" id="screen-xj3" data-name="选角3" data-phase="选角"><img src="sucai/选角3.png" alt="选角3"></div>
-      <!-- 选角4 --><div class="screen" id="screen-xj4" data-name="选角4" data-phase="选角"><img src="sucai/选角4.png" alt="选角4"></div>
-      <!-- 聊天1 --><div class="screen" id="screen-lt1" data-name="聊天1" data-phase="聊天"><img src="sucai/聊天1.png" alt="聊天1"></div>
-      <!-- 聊天2 --><div class="screen" id="screen-lt2" data-name="聊天2" data-phase="聊天"><img src="sucai/聊天2.png" alt="聊天2"></div>
-      <!-- 通话1 --><div class="screen" id="screen-th1" data-name="通话1" data-phase="通话"><img src="sucai/通话1.png" alt="通话1"></div>
-      <!-- 通话2 --><div class="screen" id="screen-th2" data-name="通话2" data-phase="通话"><img src="sucai/通话2.png" alt="通话2"></div>
-      <!-- 木头人1 --><div class="screen" id="screen-mtr1" data-name="木头人1" data-phase="木头人"><img src="sucai/木头人1.png" alt="木头人1"></div>
-      <!-- 木头人2 --><div class="screen" id="screen-mtr2" data-name="木头人2" data-phase="木头人"><img src="sucai/木头人2.png" alt="木头人2"></div>
-      <!-- 惩罚1 --><div class="screen" id="screen-cf1" data-name="惩罚1" data-phase="惩罚"><img src="sucai/惩罚1.png" alt="惩罚1"></div>
-      <!-- 惩罚2 --><div class="screen" id="screen-cf2" data-name="惩罚2" data-phase="惩罚"><img src="sucai/惩罚2.png" alt="惩罚2"></div>
-      <!-- 哄睡1 --><div class="screen" id="screen-hs1" data-name="哄睡1" data-phase="哄睡"><img src="sucai/哄睡1.png" alt="哄睡1"></div>
-      <!-- 房间1 --><div class="screen" id="screen-fj1" data-name="房间1" data-phase="房间"><img src="sucai/房间1.png" alt="房间1"></div>
-      <!-- 日记1 --><div class="screen" id="screen-rj1" data-name="日记1" data-phase="日记"><img src="sucai/日记1.png" alt="日记1"></div>
-      <!-- 收起1 --><div class="screen" id="screen-sq1" data-name="收起1" data-phase="收起"><img src="sucai/收起1.png" alt="收起1"></div>
-      <!-- 收起2 --><div class="screen" id="screen-sq2" data-name="收起2" data-phase="收起"><img src="sucai/收起2.png" alt="收起2"></div>
+<div class="screen active" id="screen-xj1"><img src="sucai/选角1.png" alt="选角1"></div>
+<div class="screen" id="screen-xj2"><img src="sucai/选角2.png" alt="选角2"></div>
+<div class="screen" id="screen-xj3"><img src="sucai/选角3.png" alt="选角3"></div>
+<div class="screen" id="screen-xj4"><img src="sucai/选角4.png" alt="选角4"></div>
+<div class="screen" id="screen-lt1"><img src="sucai/聊天1.png" alt="聊天1"></div>
+<div class="screen" id="screen-lt2"><img src="sucai/聊天2.png" alt="聊天2"></div>
+<div class="screen" id="screen-th1"><img src="sucai/通话1.png" alt="通话1"></div>
+<div class="screen" id="screen-th2"><img src="sucai/通话2.png" alt="通话2"></div>
+<div class="screen" id="screen-mtr1"><img src="sucai/木头人1.png" alt="木头人1"></div>
+<div class="screen" id="screen-mtr2"><img src="sucai/木头人2.png" alt="木头人2"></div>
+<div class="screen" id="screen-cf1"><img src="sucai/惩罚1.png" alt="惩罚1"></div>
+<div class="screen" id="screen-cf2"><img src="sucai/惩罚2.png" alt="惩罚2"></div>
+<div class="screen" id="screen-hs1"><img src="sucai/哄睡1.png" alt="哄睡1"></div>
+<div class="screen" id="screen-fj1"><img src="sucai/房间1.png" alt="房间1"></div>
+<div class="screen" id="screen-rj1"><img src="sucai/日记1.png" alt="日记1"></div>
+<div class="screen" id="screen-sq1"><img src="sucai/收起1.png" alt="收起1"></div>
+<div class="screen" id="screen-sq2"><img src="sucai/收起2.png" alt="收起2"></div>
 
-    </div><!-- /phone-frame -->
-  </div><!-- /phone-wrap -->
-</div><!-- /container -->
+</div>
+</div>
+</div>
 
 <script>
 // ╔══════════════════════════════════════════════════════════════════════════╗
 // ║                      热区配置表（改这里即可生效）                          ║
 // ║                                                                          ║
 // ║  每个热区是一个对象，包含以下属性：                                         ║
+// ║    label   = 鼠标悬停时显示的文字                                         ║
+// ║    target  = 点击跳转到哪个界面（对应上方 div 的 id）                      ║
+// ║    pos     = 热区在手机框中的位置和大小（百分比，相对 375×812 像素）        ║
 // ║                                                                          ║
-// ║    label   = 鼠标悬停时显示的文字（描述这个热区是什么）                      ║
-// ║    target  = 点击后跳转到哪个界面（对应下方 SCREENS 的 id）                 ║
-// ║    pos     = 热区在手机框中的位置和大小                                     ║
-// ║              所有值都是百分比，相对于手机框（375×812像素）                    ║
+// ║    pos 属性说明：                                                         ║
+// ║      left   = 距离左边（%）  right = 距离右边（%） 二选一                  ║
+// ║      top    = 距离顶部（%）  bottom= 距离底部（%） 二选一                  ║
+// ║      width  = 宽度（%）     height = 高度（%）                            ║
 // ║                                                                          ║
-// ║    pos 的属性（4个定位 + 2个尺寸，任选一组定位方式）：                       ║
-// ║                                                                          ║
-// ║      【从左边开始】left = 热区左边缘距手机框左边的距离（%）                  ║
-// ║      【从右边开始】right = 热区右边缘距手机框右边的距离（%）                 ║
-// ║      【从顶部开始】top = 热区上边缘距手机框顶部的距离（%）                   ║
-// ║      【从底部开始】bottom = 热区下边缘距手机框底部的距离（%）                 ║
-// ║      【宽度】width = 热区的宽度（%）                                       ║
-// ║      【高度】height = 热区的高度（%）                                      ║
-// ║                                                                          ║
-// ║    定位组合规则（水平方向二选一，垂直方向二选一）：                          ║
-// ║      水平：left + width  或  right + width                                ║
-// ║      垂直：top + height  或  bottom + height                              ║
-// ║                                                                          ║
-// ║  示例：                                                                   ║
-// ║    { left:'50%', top:'30%', width:'20%', height:'10%' }                   ║
-// ║    表示：从左边50%、顶部30%的位置开始，宽20%、高10%的矩形区域              ║
-// ║                                                                          ║
-// ║  提示：改完保存后刷新页面即可看到效果                                       ║
+// ║  改完保存刷新即可生效                                                     ║
 // ╚══════════════════════════════════════════════════════════════════════════╝
 
 const HOTSPOT_CONFIG = [
 
-  // ────────────── 选角1：角色选择主页 ──────────────
-  {
-    screen: 'screen-xj1',   // 所属界面
-    label: '选Ta',          // 悬停显示的文字
-    target: 'screen-xj2',   // 点击跳转到
-    pos: {
-      left: '4%',          // 从左边 25% 开始
-      bottom: '6%',         // 从底部 4% 开始
-      width: '92%',         // 宽度 50%
-      height: '7%'          // 高度 5%
-    }
-  },
+  // ── 选角1 ──
+  { screen:'screen-xj1', label:'选Ta', target:'screen-xj2',
+    pos:{ left:'4%', bottom:'6%', width:'92%', height:'7%' } },
 
-  // ────────────── 选角2：输入昵称 ──────────────
-  {
-    screen: 'screen-xj2',
-    label: '← 返回选角1',
-    target: 'screen-xj1',
-    pos: { left: '4%', top: '8%', width: '10%', height: '5%' }
-  },
-  {
-    screen: 'screen-xj2',
-    label: '继续 → 选角3',
-    target: 'screen-xj3',
-    pos: { left: '4%', bottom: '38%', width: '92%', height: '7%' }
-  },
+  // ── 选角2 ──
+  { screen:'screen-xj2', label:'← 返回选角1', target:'screen-xj1',
+    pos:{ left:'4%', top:'8%', width:'10%', height:'5%' } },
+  { screen:'screen-xj2', label:'继续 → 选角3', target:'screen-xj3',
+    pos:{ left:'4%', bottom:'38%', width:'92%', height:'7%' } },
 
-  // ────────────── 选角3：选择声音风格 ──────────────
-  {
-    screen: 'screen-xj3',
-    label: '← 返回选角2',
-    target: 'screen-xj2',
-    pos: { left: '4%', top: '8%', width: '10%', height: '5%' }
-  },
-  {
-    screen: 'screen-xj3',
-    label: '继续 → 选角4',
-    target: 'screen-xj4',
-    pos: { left: '4%', bottom: '6%', width: '92%', height: '7%' }
-  },
+  // ── 选角3 ──
+  { screen:'screen-xj3', label:'← 返回选角2', target:'screen-xj2',
+    pos:{ left:'4%', top:'8%', width:'10%', height:'5%' } },
+  { screen:'screen-xj3', label:'继续 → 选角4', target:'screen-xj4',
+    pos:{ left:'4%', bottom:'6%', width:'92%', height:'7%' } },
 
-  // ────────────── 选角4：独处偏好测试 ──────────────
-  {
-    screen: 'screen-xj4',
-    label: '← 返回选角3',
-    target: 'screen-xj3',
-    pos: { left: '4%', top: '8%', width: '10%', height: '5%' }
-  },
-  {
-    screen: 'screen-xj4',
-    label: '进入聊天 → 聊天1',
-    target: 'screen-lt1',
-    pos: { left: '4%', bottom: '6%', width: '92%', height: '7%' }
-  },
+  // ── 选角4 ──
+  { screen:'screen-xj4', label:'← 返回选角3', target:'screen-xj3',
+    pos:{ left:'4%', top:'8%', width:'10%', height:'5%' } },
+  { screen:'screen-xj4', label:'进入聊天 → 聊天1', target:'screen-lt1',
+    pos:{ left:'4%', bottom:'6%', width:'92%', height:'7%' } },
 
-  // ────────────── 聊天1：主聊天界面 ──────────────
-  // 注意：聊天1 只有 📞 和 ➕，没有哄睡/木头人
-  {
-    screen: 'screen-lt1',
-    label: '📞 电话 → 通话1',
-    target: 'screen-th1',
-    pos: { left: '5%', bottom: '6.5%', width: '9%', height: '5%' }
-  },
-  {
-    screen: 'screen-lt1',
-    label: '➕ 更多功能 → 聊天2',
-    target: 'screen-lt2',
-    pos: { right: '5.5%', bottom: '6.5%', width: '9%', height: '5%' }
-  },
+  // ── 聊天1 ──
+  { screen:'screen-lt1', label:'📞 电话 → 通话1', target:'screen-th1',
+    pos:{ left:'5%', bottom:'6.5%', width:'9%', height:'5%' } },
+  { screen:'screen-lt1', label:'➕ 更多功能 → 聊天2', target:'screen-lt2',
+    pos:{ right:'5.5%', bottom:'6.5%', width:'9%', height:'5%' } },
 
-  // ────────────── 聊天2：深入对话（有功能按钮行） ──────────────
-  {
-    screen: 'screen-lt2',
-    label: '📞 电话 → 通话1',
-    target: 'screen-th1',
-    pos: { left: '5%', bottom: '17.5%', width: '9%', height: '5%' }
-  },
-  {
-    screen: 'screen-lt2',
-    label: '😴 哄睡 → 哄睡1',
-    target: 'screen-hs1',
-    pos: { right: '30%', bottom: '6.5%', width: '16%', height: '8%' }
-  },
-  {
-    screen: 'screen-lt2',
-    label: '🪵 木头人 → 木头人1',
-    target: 'screen-mtr1',
-    pos: { right: '6%', bottom: '6.5%', width: '16%', height: '8%' }
-  },
+  // ── 聊天2 ──
+  { screen:'screen-lt2', label:'📞 电话 → 通话1', target:'screen-th1',
+    pos:{ left:'5%', bottom:'17.5%', width:'9%', height:'5%' } },
+  { screen:'screen-lt2', label:'😴 哄睡 → 哄睡1', target:'screen-hs1',
+    pos:{ right:'30%', bottom:'6.5%', width:'16%', height:'8%' } },
+  { screen:'screen-lt2', label:'🪵 木头人 → 木头人1', target:'screen-mtr1',
+    pos:{ right:'6%', bottom:'6.5%', width:'16%', height:'8%' } },
 
-  // ────────────── 通话1：视频通话中 ──────────────
-  {
-    screen: 'screen-th1',
-    label: '🖼 小窗 → 通话2',
-    target: 'screen-th2',
-    pos: { right: '2.5%', top: '7%', width: '12%', height: '5%' }
-  },
-  {
-    screen: 'screen-th1',
-    label: '🔴 挂断 → 聊天1',
-    target: 'screen-lt1',
-    pos: { right: '5.5%', bottom: '6.5%', width: '16%', height: '7%' }
-  },
+  // ── 通话1 ──
+  { screen:'screen-th1', label:'🖼 小窗 → 通话2', target:'screen-th2',
+    pos:{ right:'2.5%', top:'7.5%', width:'12%', height:'5%' } },
+  { screen:'screen-th1', label:'🔴 挂断 → 聊天1', target:'screen-lt1',
+    pos:{ right:'5.5%', bottom:'6.5%', width:'16%', height:'7%' } },
 
-  // ────────────── 通话2：通话结束/聊天界面 ──────────────
-  {
-    screen: 'screen-th2',
-    label: '👤 头像 → 通话1',
-    target: 'screen-th1',
-    pos: { left: '73%', top: '15.5%', width: '26%', height: '16%' }
-  },
+  // ── 通话2 ──
+  { screen:'screen-th2', label:'👤 头像 → 通话1', target:'screen-th1',
+    pos:{ left:'75%', top:'16%', width:'26%', height:'16%' } },
+  { screen:'screen-th2', label:'💬 更多 → 聊天2', target:'screen-lt2',
+    pos:{ right:'5.5%', bottom:'6.5%', width:'9%', height:'5%' } },
 
-  // ────────────── 木头人1：翻牌游戏 ──────────────
-  {
-    screen: 'screen-mtr1',
-    label: '✕ 关闭游戏 → 聊天1',
-    target: 'screen-lt1',
-    pos: { right: '6.5%', top: '49%', width: '7%', height: '3.5%' }
-  },
-  {
-    screen: 'screen-mtr1',
-    label: '🃏 找到木头人 → 木头人2',
-    target: 'screen-mtr2',
-    pos: { left: '40.5%', top: '53%', width: '19%', height: '12%' }
-  },
+  // ── 木头人1 ──
+  { screen:'screen-mtr1', label:'✕ 关闭游戏 → 聊天1', target:'screen-lt1',
+    pos:{ right:'6.5%', top:'49%', width:'7%', height:'3.5%' } },
+  { screen:'screen-mtr1', label:'🃏 找到木头人 → 木头人2', target:'screen-mtr2',
+    pos:{ left:'40.5%', top:'53%', width:'19%', height:'12%' } },
 
-  // ────────────── 木头人2：木偶揭示 ──────────────
-  {
-    screen: 'screen-mtr2',
-    label: '🎭 木偶 → 惩罚1',
-    target: 'screen-cf1',
-    pos: { left: '24%', top: '78%', width: '52%', height: '9%' }
-  },
+  // ── 木头人2 ──
+  { screen:'screen-mtr2', label:'🎭 木偶 → 惩罚1', target:'screen-cf1',
+    pos:{ left:'24%', top:'78%', width:'52%', height:'9%' } },
 
-  // ────────────── 惩罚1：才艺视频选择 ──────────────
-  {
-    screen: 'screen-cf1',
-    label: '▶️ 播放视频 → 惩罚2',
-    target: 'screen-cf2',
-    pos: { left: '2%', bottom: '20%', width: '30%', height: '18%' }
-  },
-  {
-    screen: 'screen-cf1',
-    label: '💬 打开聊天2',
-    target: 'screen-lt2',
-    pos: { right: '5.5%', bottom: '6.5%', width: '9%', height: '5%' }
-  },
-  {
-    screen: 'screen-cf1',
-    label: '📞 打开通话1',
-    target: 'screen-th1',
-    pos: { left: '5%', bottom: '6.5%', width: '9%', height: '5%' }
-  },
-  // ────────────── 惩罚2：视频播放中 ──────────────
-  {
-    screen: 'screen-cf2',
-    label: '✕ 关闭 → 聊天1',
-    target: 'screen-lt1',
-    pos: { right: '2.8%', top: '7.8%', width: '11%', height: '5%' }
-  },
-  // ────────────── 哄睡1：音乐哄睡 ──────────────
-  {
-    screen: 'screen-hs1',
-    label: '✕ 关闭音乐 → 聊天1',
-    target: 'screen-lt1',
-    pos: { right: '6%', bottom: '18%', width: '8%', height: '4%' }
-  },
+  // ── 惩罚1 ──
+  { screen:'screen-cf1', label:'▶️ 播放视频 → 惩罚2', target:'screen-cf2',
+    pos:{ left:'2%', bottom:'20%', width:'30%', height:'18%' } },
+  { screen:'screen-cf1', label:'💬 打开聊天2', target:'screen-lt2',
+    pos:{ right:'5.5%', bottom:'6.5%', width:'9%', height:'5%' } },
+  { screen:'screen-cf1', label:'📞 打开通话1', target:'screen-th1',
+    pos:{ left:'5%', bottom:'6.5%', width:'9%', height:'5%' } },
+
+  // ── 惩罚2 ──
+  { screen:'screen-cf2', label:'✕ 关闭 → 聊天1', target:'screen-lt1',
+    pos:{ right:'2.8%', top:'7.8%', width:'11%', height:'5%' } },
+
+  // ── 哄睡1 ──
+  { screen:'screen-hs1', label:'✕ 关闭音乐 → 聊天1', target:'screen-lt1',
+    pos:{ right:'6%', bottom:'18%', width:'8%', height:'4%' } },
 
   // ╔══════════════════════════════════════════════════════════════════════════╗
   // ║              ★ 新增热区（用户自行调整位置和大小）                           ║
-  // ║  按界面分组，每个分组上方有注释说明，方便定位和修改                            ║
   // ╚══════════════════════════════════════════════════════════════════════════╝
-// ────────────── 聊天1 右上角 → 房间1（新增）──────────────
-  {
-    screen: 'screen-lt1',
-    label: '🏠 房间',
-    target: 'screen-fj1',
-    pos: { right: '2%', top: '7%', width: '12%', height: '6%' }
-  },
 
-// ────────────── 房间1（新增界面）──────────────
-  {
-    screen: 'screen-fj1',
-    label: '← 返回聊天1',
-    target: 'screen-lt1',
-    pos: { left: '4%', top: '8%', width: '11%', height: '6%' }
-  },
-  {
-    screen: 'screen-fj1',
-    label: '📖 打开日记1',
-    target: 'screen-rj1',
-    pos: { left: '25%', top: '44%', width: '30%', height: '10%' }
-  },
+  // ── 聊天1 右上角 → 房间1 ──
+  { screen:'screen-lt1', label:'🏠 房间', target:'screen-fj1',
+    pos:{ right:'2%', top:'7%', width:'12%', height:'6%' } },
 
-// ────────────── 日记1（新增界面）──────────────
-  {
-    screen: 'screen-rj1',
-    label: '← 返回房间1',
-    target: 'screen-fj1',
-    pos: { left: '4%', top: '8%', width: '11%', height: '6%' }
-  },
+  // ── 房间1 ──
+  { screen:'screen-fj1', label:'← 返回聊天1', target:'screen-lt1',
+    pos:{ left:'4%', top:'8%', width:'11%', height:'6%' } },
+  { screen:'screen-fj1', label:'📖 打开日记1', target:'screen-rj1',
+    pos:{ left:'25%', top:'44%', width:'30%', height:'10%' } },
 
-// ────────────── 木头人1 中间 → 收起1（新增）──────────────
-  {
-    screen: 'screen-mtr1',
-    label: '📦 收起',
-    target: 'screen-sq1',
-    pos: { right: '16%', top: '49%', width: '7%', height: '3.5%' }
-  },
+  // ── 日记1 ──
+  { screen:'screen-rj1', label:'← 返回房间1', target:'screen-fj1',
+    pos:{ left:'4%', top:'8%', width:'11%', height:'6%' } },
 
-// ────────────── 收起1（新增界面）──────────────
-  {
-    screen: 'screen-sq1',
-    label: '← 返回木头人1',
-    target: 'screen-mtr1',
-    pos: { left: '86%', top: '80%', width: '16%', height: '6%' }
-  },
+  // ── 木头人1 中间 → 收起1 ──
+  { screen:'screen-mtr1', label:'📦 收起', target:'screen-sq1',
+    pos:{ right:'16%', top:'49%', width:'7%', height:'3.5%' } },
+  // ── 收起1 ──
+  { screen:'screen-sq1', label:'← 返回木头人1', target:'screen-mtr1',
+    pos:{ left:'86%', top:'80%', width:'16%', height:'6%' } },
 
-// ────────────── 哄睡1 中间 → 收起2（新增）──────────────
-  {
-    screen: 'screen-hs1',
-    label: '🗂️ 收起',
-    target: 'screen-sq2',
-    pos: { right: '16%', bottom: '18%', width: '8%', height: '4%' }
-  },
+  // ── 哄睡1 中间 → 收起2 ──
+  { screen:'screen-hs1', label:'🗂️ 收起', target:'screen-sq2',
+    pos:{ right:'16%', bottom:'18%', width:'8%', height:'4%' } },
 
-// ────────────── 收起2（新增界面）──────────────
-  {
-    screen: 'screen-sq2',
-    label: '← 返回哄睡1',
-    target: 'screen-hs1',
-    pos: { left: '86%', top: '80%', width: '16%', height: '6%' }
-  }
-
+  // ── 收起2 ──
+  { screen:'screen-sq2', label:'← 返回哄睡1', target:'screen-hs1',
+    pos:{ left:'86%', top:'80%', width:'16%', height:'6%' } }
 ];
-
 
 // ╔══════════════════════════════════════════════════════════════════════════╗
 // ║                      运行代码（不需要改）                                   ║
@@ -457,8 +272,7 @@ function buildHotspots() {
       (s.bottom ? 'bottom:' + s.bottom + ';' : '') +
       'width:'  + s.width  + ';' +
       'height:' + s.height + ';';
-    el.addEventListener('click', e => {
-      e.stopPropagation();
+    el.addEventListener('click', () => {
       if (cfg.target) navigateTo(cfg.target);
     });
     screen.appendChild(el);
@@ -471,12 +285,9 @@ function navigateTo(screenId) {
   document.getElementById(screenId)?.classList.add('active');
   currentScreen = screenId;
 }
-function init() {
-  buildHotspots();
-}
 
+function init() { buildHotspots(); }
 init();
-
 </script>
 
 </body>
