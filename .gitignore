@@ -1,1 +1,6 @@
 cloudflared.exe
+nul
+.tokeny/
+deploy/
+cloudflared.exe
+image.png
