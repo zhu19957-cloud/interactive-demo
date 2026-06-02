@@ -103,16 +103,16 @@ const hotspots=[];
 function px(v,dim){return parseFloat(v)/100*dim+'px'}
 
 function layout(){
-  const W=pf.offsetWidth, H=pf.offsetHeight;
+  const W=pf.offsetWidth,H=pf.offsetHeight;
   hotspots.forEach(h=>{
-    const p=h.p;
-    h.el.style.cssText=[
-      p.l!=null?'left:'+px(p.l,W):'','right:'+px(p.r||0,W),
-      p.t!=null?'top:'+px(p.t,H):'','bottom:'+px(p.b||0,H),
-      'width:'+px(p.w,W),'height:'+px(p.h,H)
-    ].join(';');
+    const p=h.p,a=[];
+    if(p.l!=null)a.push('left:'+px(p.l,W));
+    if(p.r!=null)a.push('right:'+px(p.r,W));
+    if(p.t!=null)a.push('top:'+px(p.t,H));
+    if(p.b!=null)a.push('bottom:'+px(p.b,H));
+    a.push('width:'+px(p.w,W),'height:'+px(p.h,H));
+    h.el.style.cssText=a.join(';');
   });
-}
 
 CFG.forEach(c=>{
   const sc=document.getElementById(c.s);
